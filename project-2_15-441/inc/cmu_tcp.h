@@ -60,6 +60,14 @@ typedef struct {
   int dying;
   pthread_mutex_t death_lock;
   window_t window;
+  uint32_t initial_seq;
+  uint32_t peer_initial_seq;
+  uint32_t next_seq;
+  int connection_state;
+  int sent_len;
+  int backend_error;
+  int64_t retransmit_at;
+  int64_t last_receive_at;
 } cmu_socket_t;
 
 /*

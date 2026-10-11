@@ -155,6 +155,7 @@ int cmu_read(cmu_socket_t *sock, void *buf, int length, cmu_read_mode_t flags) {
         else
           read_len = sock->received_len;
 
+          
         memcpy(buf, sock->received_buf, read_len);
         if (read_len < sock->received_len) {
           new_buf = malloc(sock->received_len - read_len);
