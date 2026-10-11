@@ -1,1 +1,31 @@
-Describe your tests here
+Verification on October 11, 2026 (Ubuntu under WSL)
+
+Before repair:
+- The existing sources compiled successfully.
+- The independent initiator-handshake test failed with a timeout.
+- cmu_tcp.c did not initialize the additional protocol fields used by backend.c.
+
+After repair:
+- make clean && make: passed.
+- make test: all 10 independent UDP-peer tests passed.
+- CP1_TEST_WINDOW=97 with AddressSanitizer and UndefinedBehaviorSanitizer:
+  all 10 tests passed, with no sanitizer findings.
+- CP1_TEST_TIMEOUT=3000 for the initiator-handshake and fixed-window/Go-Back-N
+  tests: both passed (21.624 seconds total).
+
+The default test build uses temporary grading-header copies with a 120 ms
+retransmission timeout. Production grading.h was not changed.
+
+Coverage includes handshake retries, malformed packets, cumulative ACKs,
+window sliding, timeout retransmission, wraparound, duplicates, out-of-order
+reception, lost final data ACK, and simultaneous lossless and lossy transfers.
+The lossless test compares approximately one megabyte in each direction.
+The lossy proxy injects reproducible 12% loss and 5% duplicates.
+
+client.c, server.c, backend.c, and inc/cmu_tcp.h were kept byte-for-byte unchanged.
+The sample applications were reviewed but were not used as the verification
+endpoints. Their hardcoded paths, string assumptions, and single-read file
+reception are unsuitable for a general file-transfer correctness test.
+
+Optional FIN teardown and checkpoint 2 functionality are not implemented.
+These checks do not establish a score on private Gradescope tests.
